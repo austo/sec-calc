@@ -18,7 +18,7 @@ namespace SecuritiesPositionCalculator
             {
                 ParseArgs(args);
             }
-            //ReadTrades();
+            ReadTrades();
             WritePositions();
         }
 
@@ -84,5 +84,6 @@ namespace SecuritiesPositionCalculator
             Console.WriteLine(string.Format("Unknown attribute \"{0}\" with value \"{1}\" at {2}.",
                 attr.Name, attr.Value, e.LineNumber));
         }
+
     }
 }

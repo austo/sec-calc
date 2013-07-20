@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TradeOrder xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="www.sac.com">
+  <Trades>
+    <Trade>
+      <Action>Buy</Action>
+      <Quantity>1000</Quantity>
+      <TradePrice>98.34</TradePrice>
+      <SecurityId>C 9% 2014</SecurityId>
+      <TradingBook>SAC1</TradingBook>
+    </Trade>
+    <Trade>
+      <Action>Buy</Action>
+      <Quantity>100</Quantity>
+      <TradePrice>90</TradePrice>
+      <SecurityId>IBM</SecurityId>
+      <TradingBook>SAC_LS</TradingBook>
+    </Trade>
+    <Trade>
+      <Action>Buy</Action>
+      <Quantity>2000</Quantity>
+      <TradePrice>91</TradePrice>
+      <SecurityId>IBM</SecurityId>
+      <TradingBook>SAC_HOLDEM</TradingBook>
+    </Trade>
+    <Trade>
+      <Action>Sell</Action>
+      <Quantity>1000</Quantity>
+      <TradePrice>92</TradePrice>
+      <SecurityId>IBM</SecurityId>
+      <TradingBook>SAC_LS</TradingBook>
+    </Trade>
+    <Trade>
+      <Action>BUY</Action>
+      <Quantity>300</Quantity>
+      <TradePrice>30</TradePrice>
+      <SecurityId>APPL</SecurityId>
+      <TradingBook>S_MAC</TradingBook>
+    </Trade>
+    <Trade>
+      <Action>Buy</Action>
+      <Quantity>500</Quantity>
+      <TradePrice>35</TradePrice>
+      <SecurityId>APPL</SecurityId>
+      <TradingBook>S_MAC</TradingBook>
+    </Trade>
+    <Trade>
+      <Action>Sell</Action>
+      <Quantity>200</Quantity>
+      <TradePrice>20</TradePrice>
+      <SecurityId>APPL</SecurityId>
+      <TradingBook>S_MAC</TradingBook>
+    </Trade>
+  </Trades>
+</TradeOrder>
