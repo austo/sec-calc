@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Xml.Serialization;
 
 namespace SecuritiesPositionCalculator
@@ -47,6 +45,22 @@ namespace SecuritiesPositionCalculator
         public void Add(Position position)
         {
             _positions.Add(position);
+        }
+
+        public void Write(string fileName)
+        {
+            XmlSerializer x = new XmlSerializer(typeof(PositionReport));
+            TextWriter writer = new StreamWriter(fileName);
+            x.Serialize(writer, this);
+        }
+
+        public PositionReport(string name, TradeOrder tradeOrder)
+        {
+            Name = name;
+            foreach (var trade in tradeOrder.Trades)
+            {
+                _positions.Add(new Position(trade));
+            }
         }
     }
 }

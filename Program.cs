@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
-using System.Xml.Serialization;
-using System.IO;
+using System.Threading;
 
 namespace SecuritiesPositionCalculator
 {
@@ -14,76 +11,43 @@ namespace SecuritiesPositionCalculator
 
         static void Main(string[] args)
         {
-            if (args.Count() != 1) // specified filenames
+            if (args.Count() != 1) // We have some options...
             {
-                ParseArgs(args);
+                if (!Util.ParseArgs(args))
+                {
+                    return; // ...and they're wrong
+                }
             }
-            ReadTrades();
-            WritePositions();
-        }
 
-        static void ParseArgs(IList<string> args)
-        {
-            for (int i = 0; i < args.Count(); ++i)
-            {
-                if (Cfg.Arguments.Flags.InFile.IsMatch(args[i]))
-                {
-                    Cfg.Settings.TradesFile = args[++i];
-                }
-                else if (Cfg.Arguments.Flags.OutFile.IsMatch(args[i]))
-                {
-                    Cfg.Settings.PositionsFile = args[++i];
-                }
-            }
+            ReadTrades();
+
+            // Our "market" will run in a background thread.
+            // The motivation for this to have a more meaningful datum for ProfitLoss. 
+            var market = new Market(_tradeOrder);
+            var marketStart = new ThreadStart(market.Start);
+            var marketThread = new Thread(marketStart) { IsBackground = true };
+
+            Console.Beep(); // Too tempting
+            Console.WriteLine("The market has started.\n" +
+                              "To see a report of your positions, press Enter.\n");
+            
+            marketThread.Start();
+
+            Console.ReadLine();
+            WritePositions();
         }
 
         private static void ReadTrades()
         {
-            XmlSerializer xSer = new XmlSerializer(typeof(TradeOrder));
-            xSer.UnknownNode += XUnknownNode;
-            xSer.UnknownAttribute += XUnknownAttribute;
-            using (FileStream fs = new FileStream(Cfg.Settings.TradesFile, FileMode.Open))
-            {
-                _tradeOrder = (TradeOrder)xSer.Deserialize(fs);
-            }
+            _tradeOrder = TradeOrder.ReadFromFile(Cfg.Settings.TradesFile);
         }
 
         private static void WritePositions()
         {
-            _positionReport = new PositionReport { Name = "Positions" };
-
-            // Test data
-            Position p = new Position
-                             {
-                                 MarketPrice = 50.19,
-                                 MarketValue = 50.21,
-                                 ProfitLoss = .01,
-                                 SecurityId = "C 9% 2014",
-                                 SecurityType = SecurityType.Hedge,
-                                 TradingBook = new TradingBook { Name = "SAC1" }
-                             };
-
-            _positionReport.Add(p);
-            XmlSerializer x = new XmlSerializer(typeof(PositionReport));
-            TextWriter writer = new StreamWriter(Cfg.Settings.PositionsFile);
-            x.Serialize(writer, _positionReport);
+            // Fight with the market thread's ReaderWriterLock to get prices,
+            // then build PositionReport and write to file and screen.
+            _positionReport = new PositionReport("Positions", _tradeOrder);
+            _positionReport.Write(Cfg.Settings.PositionsFile);
         }
-
-
-        protected static void
-            XUnknownNode(object sender, XmlNodeEventArgs e)
-        {
-            Console.WriteLine(string.Format("Unknown node \"{0}\" at line {1}:\t\"{2}\".",
-                e.Name, e.LineNumber, e.Text));
-        }
-
-        protected static void
-            XUnknownAttribute(object sender, XmlAttributeEventArgs e)
-        {
-            var attr = e.Attr;
-            Console.WriteLine(string.Format("Unknown attribute \"{0}\" with value \"{1}\" at {2}.",
-                attr.Name, attr.Value, e.LineNumber));
-        }
-
     }
 }

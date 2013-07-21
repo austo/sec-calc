@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Cfg.cs" />
+    <Compile Include="Classes\Market.cs" />
     <Compile Include="Classes\Position.cs" />
     <Compile Include="Classes\PositionReport.cs" />
     <Compile Include="Classes\Trade.cs" />
@@ -61,7 +62,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="trades.xml" />
+    <Content Include="trades.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

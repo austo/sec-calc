@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Configuration;
 using System.Text.RegularExpressions;
 
@@ -15,6 +11,8 @@ namespace SecuritiesPositionCalculator
         {
             public static string TradesFile = "bad filename";
             public static string PositionsFile = "second bad filename";
+            public static double Volitility = 8.5;
+
             public const string Namespace = "www.sac.com";
 
             static Settings()
@@ -30,6 +28,7 @@ namespace SecuritiesPositionCalculator
             {
                 public static Regex InFile = new Regex(@"-?i", RegexOptions.IgnoreCase);
                 public static Regex OutFile = new Regex(@"-?o", RegexOptions.IgnoreCase);
+                public static Regex Volitility = new Regex(@"-?v", RegexOptions.IgnoreCase);
             }
         }
 
