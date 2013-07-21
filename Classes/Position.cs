@@ -19,6 +19,8 @@
         public double MarketValue;
         public double ProfitLoss;
 
+        public Position() { }
+
         public Position(Trade trade)
         {
             SecurityId = trade.SecurityId;
