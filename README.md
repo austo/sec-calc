@@ -11,4 +11,5 @@
 * "-i" or "i" - input (trades) file
 * "-o" or "o" - output (positions) file
 * "-v" or "v" - market volatility as a percentage of initial price
+
 Command line switches are not case sensitive.
