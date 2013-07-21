@@ -1,6 +1,4 @@
-﻿using System.Xml.Serialization;
-
-namespace SecuritiesPositionCalculator
+﻿namespace SecuritiesPositionCalculator
 {
     public enum SecurityType
     {
@@ -20,8 +18,7 @@ namespace SecuritiesPositionCalculator
         public double MarketPrice;
         public double MarketValue;
         public double ProfitLoss;
-        [XmlIgnoreAttribute]
-        public int Quantity;
+        
 
         public Position()
         {
@@ -32,7 +29,7 @@ namespace SecuritiesPositionCalculator
             SecurityId = trade.SecurityId;
             TradingBook = trade.TradingBook;
             SecurityType = SecurityType.Option;
-            Quantity = trade.Quantity;
+            ProfitLoss = 0;
         }
     }
 }

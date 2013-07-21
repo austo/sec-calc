@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Serialization;
 
 namespace SecuritiesPositionCalculator
 {
@@ -16,5 +17,6 @@ namespace SecuritiesPositionCalculator
         public double TradePrice;
         public string SecurityId;
         public TradingBook TradingBook;
+        [XmlIgnoreAttribute] public bool Executed;
     }
 }

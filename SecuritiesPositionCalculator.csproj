@@ -53,7 +53,7 @@
     <Compile Include="Classes\TradeOrder.cs" />
     <Compile Include="Classes\TradingBook.cs" />
     <Compile Include="Classes\Util.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Classes\Simulation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

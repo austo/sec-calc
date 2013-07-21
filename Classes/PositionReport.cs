@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -10,11 +12,30 @@ namespace SecuritiesPositionCalculator
     public class PositionReport : ICollection
     {
         public string Name;
-        private readonly ArrayList _positions = new ArrayList();
-
+        private readonly List<Position> _positions = new List<Position>();
+        
         public Position this[int index]
         {
-            get { return (Position)_positions[index]; }
+            get { return _positions[index]; }
+        }
+
+        public Position For(string securityId, string bookName)
+        {
+            
+            return _positions
+                .FirstOrDefault(p => p.SecurityId == securityId &&
+                    p.TradingBook.Name.ToLower() == bookName.ToLower());
+        }
+
+        // Setter for updated position
+        public void Update(Position position)
+        {
+            var old = _positions.First(p =>
+                p.SecurityId.ToLower() == position.SecurityId.ToLower() &&
+                p.TradingBook.Name.ToLower() == position.TradingBook.Name.ToLower());
+            if (old == null) { return; }
+            _positions.Remove(old);
+            _positions.Add(position);
         }
 
         public IEnumerator GetEnumerator()
@@ -24,7 +45,8 @@ namespace SecuritiesPositionCalculator
 
         public void CopyTo(Array array, int index)
         {
-            _positions.CopyTo(array, index);
+
+            _positions.CopyTo((Position[])array, index);
         }
 
         public int Count
@@ -47,17 +69,56 @@ namespace SecuritiesPositionCalculator
             _positions.Add(position);
         }
 
-        public void Write(string fileName)
+        private void CleanValues()
         {
+            for (int i = 0, n = Count; i < n; i++)
+            {
+                this[i].ProfitLoss = Math.Round(this[i].ProfitLoss, 2);
+            }
+        }
+
+        public void WriteToFile(string fileName)
+        {
+            CleanValues();
             XmlSerializer x = new XmlSerializer(typeof(PositionReport));
             TextWriter writer = new StreamWriter(fileName);
             x.Serialize(writer, this);
+            Console.WriteLine(string.Format("Output file written to {0}",
+                Cfg.Settings.PositionsFile));
+        }
+
+        public void WriteToScreen()
+        {
+            Console.WriteLine("\n\nYour positions:\n");
+            foreach (Position position in this)
+            {
+                Console.WriteLine(string.Format("{0} in {1}:", 
+                    position.SecurityId, position.TradingBook.Name));
+                Console.Write("Market price:");
+                Console.CursorLeft = Cfg.Settings.ReportColumnWidth;
+                Console.WriteLine(string.Format("{0:C}", position.MarketPrice));
+                Console.Write("Market value:");
+                Console.CursorLeft = Cfg.Settings.ReportColumnWidth;
+   
+                Console.WriteLine(string.Format("{0:C}", position.MarketValue));
+                Console.Write("Profit/Loss:");
+                Console.CursorLeft = Cfg.Settings.ReportColumnWidth;
+                Console.WriteLine(string.Format("{0:C}", position.ProfitLoss));
+            }
+            Console.WriteLine();
         }
 
         public PositionReport(string name, TradeOrder tradeOrder)
         {
             Name = name;
-            foreach (var trade in tradeOrder.Trades)
+
+            // PositionReport is grouped by SecurityId and TradingBook name,
+            // so filter out duplicates here.
+            foreach (var trade in tradeOrder.Trades
+                .Where(trade => !_positions
+                    .Any(p => 
+                        p.SecurityId.ToLower() == trade.SecurityId.ToLower() &&
+                        p.TradingBook.Name.ToLower() == trade.TradingBook.Name.ToLower())))
             {
                 _positions.Add(new Position(trade));
             }

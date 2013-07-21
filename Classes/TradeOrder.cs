@@ -8,7 +8,8 @@ namespace SecuritiesPositionCalculator
         Namespace = Cfg.Settings.Namespace, IsNullable = false)]
     public class TradeOrder
     {
-        [XmlArrayAttribute("Trades")] public Trade[] Trades;
+        [XmlArrayAttribute("Trades")]
+        public Trade[] Trades;
 
 
         protected static void
@@ -35,6 +36,50 @@ namespace SecuritiesPositionCalculator
             {
                 return (TradeOrder)xSer.Deserialize(fs);
             }
+        }
+
+        public void Execute(Market market, PositionReport report)
+        {
+            // Compare market price to trade price, buy or sell accordingly
+            Util.MarketLock.EnterUpgradeableReadLock();
+            for (int i = 0, n = Trades.Length; i < n; i++)
+            {
+                if (Trades[i].Executed) { continue; }
+                Action action;
+                if (!Enum.TryParse(Trades[i].Action.Trim(), true, out action))
+                {
+                    continue;
+                }
+
+                var position = report.For(Trades[i].SecurityId, Trades[i].TradingBook.Name);
+                switch (action)
+                {
+                    case Action.Sell:
+                        if (market.Securities[Trades[i].SecurityId] >= Trades[i].TradePrice)
+                        {
+                            Util.MarketLock.EnterWriteLock();
+                            position.ProfitLoss +=
+                                market.Securities[Trades[i].SecurityId] * Trades[i].Quantity;
+                            Trades[i].Executed = true;
+                            report.Update(position);
+                            Util.MarketLock.ExitWriteLock();
+                        }
+                        break;
+
+                    case Action.Buy:
+                        if (market.Securities[Trades[i].SecurityId] <= Trades[i].TradePrice)
+                        {
+                            Util.MarketLock.EnterWriteLock();
+                            position.ProfitLoss -=
+                                market.Securities[Trades[i].SecurityId] * Trades[i].Quantity;
+                            Trades[i].Executed = true;
+                            report.Update(position);
+                            Util.MarketLock.ExitWriteLock();
+                        }
+                        break;
+                }
+            }
+            Util.MarketLock.ExitUpgradeableReadLock();
         }
     }
 }

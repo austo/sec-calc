@@ -12,6 +12,8 @@ namespace SecuritiesPositionCalculator
             public static string TradesFile = "bad filename";
             public static string PositionsFile = "second bad filename";
             public static double Volitility = 8.5;
+            public static int MaxTradeInterval = 3000;
+            public static int ReportColumnWidth = 20;
 
             public const string Namespace = "www.sac.com";
 
@@ -33,19 +35,14 @@ namespace SecuritiesPositionCalculator
             get
             {
                 var r = new Random();
-                var index = r.Next()%ClosingReasons.Length - 1;
+                var index = r.Next() % (ClosingReasons.Length - 1);
                 return ClosingReasons[index];
             }
         }
 
-        public static class Arguments
+        public static class Args
         {
-            public static class Flags
-            {
-                public static Regex InFile = new Regex(@"-?i", RegexOptions.IgnoreCase);
-                public static Regex OutFile = new Regex(@"-?o", RegexOptions.IgnoreCase);
-                public static Regex Volitility = new Regex(@"-?v", RegexOptions.IgnoreCase);
-            }
+            public static Regex Switch = new Regex(@"-?([iov])", RegexOptions.IgnoreCase);
         }
 
         public static void ReadConfigSettings(Type t)
