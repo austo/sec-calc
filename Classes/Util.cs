@@ -17,8 +17,7 @@ namespace SecuritiesPositionCalculator
                 if (!Cfg.Args.Switch.IsMatch(args[i]))
                 {
                     Console.WriteLine(
-                        string.Format("Usage: {0} -i <infile>, -o <outfile>," +
-                                      " -v <max volitility>", args[0]));
+                        string.Format(Cfg.Settings.UsageMessage, args[0]));
                     return false;
                 }
 

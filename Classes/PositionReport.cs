@@ -13,7 +13,7 @@ namespace SecuritiesPositionCalculator
     {
         public string Name;
         private readonly List<Position> _positions = new List<Position>();
-        
+
         public Position this[int index]
         {
             get { return _positions[index]; }
@@ -21,13 +21,13 @@ namespace SecuritiesPositionCalculator
 
         public Position For(string securityId, string bookName)
         {
-            
             return _positions
                 .FirstOrDefault(p => p.SecurityId == securityId &&
                     p.TradingBook.Name.ToLower() == bookName.ToLower());
         }
 
         // Setter for updated position
+        // (may not actually need this if members are accessed by reference)
         public void Update(Position position)
         {
             var old = _positions.First(p =>
@@ -92,18 +92,21 @@ namespace SecuritiesPositionCalculator
             Console.WriteLine("\n\nYour positions:\n");
             foreach (Position position in this)
             {
-                Console.WriteLine(string.Format("{0} in {1}:", 
+                Console.WriteLine(string.Format("{0} in {1}:",
                     position.SecurityId, position.TradingBook.Name));
+                Console.CursorLeft = Cfg.Settings.TabStop;
                 Console.Write("Market price:");
                 Console.CursorLeft = Cfg.Settings.ReportColumnWidth;
                 Console.WriteLine(string.Format("{0:C}", position.MarketPrice));
+                Console.CursorLeft = Cfg.Settings.TabStop;
                 Console.Write("Market value:");
                 Console.CursorLeft = Cfg.Settings.ReportColumnWidth;
-   
                 Console.WriteLine(string.Format("{0:C}", position.MarketValue));
+                Console.CursorLeft = Cfg.Settings.TabStop;
                 Console.Write("Profit/Loss:");
                 Console.CursorLeft = Cfg.Settings.ReportColumnWidth;
                 Console.WriteLine(string.Format("{0:C}", position.ProfitLoss));
+                Console.WriteLine();
             }
             Console.WriteLine();
         }
@@ -116,7 +119,7 @@ namespace SecuritiesPositionCalculator
             // so filter out duplicates here.
             foreach (var trade in tradeOrder.Trades
                 .Where(trade => !_positions
-                    .Any(p => 
+                    .Any(p =>
                         p.SecurityId.ToLower() == trade.SecurityId.ToLower() &&
                         p.TradingBook.Name.ToLower() == trade.TradingBook.Name.ToLower())))
             {

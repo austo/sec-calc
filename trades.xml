@@ -47,6 +47,15 @@
       </TradingBook>
     </Trade>
     <Trade>
+      <Action>BUY</Action>
+      <Quantity>250</Quantity>
+      <TradePrice>430</TradePrice>
+      <SecurityId>GOOG</SecurityId>
+      <TradingBook>
+        <Name>S_MAC</Name>
+      </TradingBook>
+    </Trade>
+    <Trade>
       <Action>Buy</Action>
       <Quantity>500</Quantity>
       <TradePrice>35</TradePrice>

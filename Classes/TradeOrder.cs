@@ -11,7 +11,6 @@ namespace SecuritiesPositionCalculator
         [XmlArrayAttribute("Trades")]
         public Trade[] Trades;
 
-
         protected static void
             XUnknownNode(object sender, XmlNodeEventArgs e)
         {
@@ -23,7 +22,8 @@ namespace SecuritiesPositionCalculator
             XUnknownAttribute(object sender, XmlAttributeEventArgs e)
         {
             var attr = e.Attr;
-            Console.WriteLine(string.Format("Unknown attribute \"{0}\" with value \"{1}\" at {2}.",
+            Console.WriteLine(
+                string.Format("Unknown attribute \"{0}\" with value \"{1}\" at {2}.",
                 attr.Name, attr.Value, e.LineNumber));
         }
 
@@ -59,7 +59,7 @@ namespace SecuritiesPositionCalculator
                         {
                             Util.MarketLock.EnterWriteLock();
                             position.ProfitLoss +=
-                                market.Securities[Trades[i].SecurityId] * Trades[i].Quantity;
+                                (market.Securities[Trades[i].SecurityId] * Trades[i].Quantity);
                             Trades[i].Executed = true;
                             report.Update(position);
                             Util.MarketLock.ExitWriteLock();
@@ -71,7 +71,7 @@ namespace SecuritiesPositionCalculator
                         {
                             Util.MarketLock.EnterWriteLock();
                             position.ProfitLoss -=
-                                market.Securities[Trades[i].SecurityId] * Trades[i].Quantity;
+                                (market.Securities[Trades[i].SecurityId] * Trades[i].Quantity);
                             Trades[i].Executed = true;
                             report.Update(position);
                             Util.MarketLock.ExitWriteLock();

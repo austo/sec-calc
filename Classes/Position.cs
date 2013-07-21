@@ -12,17 +12,12 @@
     public class Position
     {
         public string SecurityId;
-        
+
         public SecurityType SecurityType;
         public TradingBook TradingBook;
         public double MarketPrice;
         public double MarketValue;
         public double ProfitLoss;
-        
-
-        public Position()
-        {
-        }
 
         public Position(Trade trade)
         {

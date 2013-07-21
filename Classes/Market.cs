@@ -7,8 +7,6 @@ namespace SecuritiesPositionCalculator
 {
     public class Market
     {
-        //private readonly ReaderWriterLockSlim
-        //    _cacheLock = new ReaderWriterLockSlim();
         public readonly Dictionary<string, double>
             Securities = new Dictionary<string, double>();
 
@@ -81,7 +79,7 @@ namespace SecuritiesPositionCalculator
                 report[i].MarketPrice =
                     Math.Round(Securities[report[i].SecurityId], 2);
                 report[i].MarketValue =
-                    Math.Round(report[i].MarketPrice * qty, 2);
+                    Math.Round(Securities[report[i].SecurityId] * qty, 2);
                 Util.MarketLock.ExitWriteLock();
             }
             Util.MarketLock.ExitUpgradeableReadLock();
