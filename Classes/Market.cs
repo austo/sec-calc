@@ -75,7 +75,7 @@ namespace SecuritiesPositionCalculator
             _cacheLock.ExitUpgradeableReadLock();
         }
 
-        private void Fluctuate(Random random, string[] secNames)
+        private void Fluctuate(Random random, IList<string> secNames)
         {
             for (int i = 0, n = _securities.Count; i < n; i++)
             {
