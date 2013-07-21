@@ -11,7 +11,7 @@ namespace SecuritiesPositionCalculator
         {
             public static string TradesFile = "bad filename";
             public static string PositionsFile = "second bad filename";
-            public static double Volitility = 8.5;
+            public static double Volatility = 8.5;
             public static int MaxTradeInterval = 3000;
             public static int ReportColumnWidth = 20;
 

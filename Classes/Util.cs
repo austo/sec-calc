@@ -34,7 +34,7 @@ namespace SecuritiesPositionCalculator
                         double d;
                         if (double.TryParse(args[++i], out d))
                         {
-                            Cfg.Settings.Volitility = d;
+                            Cfg.Settings.Volatility = d;
                         }
                         break;
                 }

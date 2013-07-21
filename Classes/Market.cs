@@ -93,7 +93,7 @@ namespace SecuritiesPositionCalculator
             {
                 var secName = secNames[i];
                 var price = Securities[secName];
-                var flux = price * ((random.NextDouble() % Cfg.Settings.Volitility) / 100);
+                var flux = price * ((random.NextDouble() % Cfg.Settings.Volatility) / 100);
                 Util.MarketLock.EnterWriteLock();
                 price += random.Next() % 2 == 0 ? flux : flux * -1;
                 Securities[secName] = price;
