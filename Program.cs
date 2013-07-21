@@ -22,7 +22,7 @@ namespace SecuritiesPositionCalculator
             ReadTrades();
 
             // Our "market" will run in a background thread.
-            // The motivation for this to have a more meaningful datum for ProfitLoss. 
+            // The motivation for this to have more meaningful data for ProfitLoss. 
             var market = new Market(_tradeOrder);
             var marketStart = new ThreadStart(market.Start);
             var marketThread = new Thread(marketStart) { IsBackground = true };
@@ -34,7 +34,10 @@ namespace SecuritiesPositionCalculator
             marketThread.Start();
 
             Console.ReadLine();
-            WritePositions();
+            WritePositions(market);
+            marketThread.Abort(Cfg.ClosingReason);
+            marketThread.Join();
+            Console.ReadLine();
         }
 
         private static void ReadTrades()
@@ -42,11 +45,12 @@ namespace SecuritiesPositionCalculator
             _tradeOrder = TradeOrder.ReadFromFile(Cfg.Settings.TradesFile);
         }
 
-        private static void WritePositions()
+        private static void WritePositions(Market market)
         {
             // Fight with the market thread's ReaderWriterLock to get prices,
             // then build PositionReport and write to file and screen.
             _positionReport = new PositionReport("Positions", _tradeOrder);
+            market.Close(_positionReport);
             _positionReport.Write(Cfg.Settings.PositionsFile);
         }
     }

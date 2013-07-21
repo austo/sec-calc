@@ -17,11 +17,27 @@ namespace SecuritiesPositionCalculator
 
             static Settings()
             {
-                var t = typeof (Settings);
+                var t = typeof(Settings);
                 ReadConfigSettings(t);
             }
         }
-        
+
+        private static readonly string[] ClosingReasons = {
+                                                             "excessive leverage", "insider trading",
+                                                             "corporate malfeasance", "massive sell-off",
+                                                             "pension obligations", "CFTC crackdown"
+                                                         };
+
+        public static string ClosingReason
+        {
+            get
+            {
+                var r = new Random();
+                var index = r.Next()%ClosingReasons.Length - 1;
+                return ClosingReasons[index];
+            }
+        }
+
         public static class Arguments
         {
             public static class Flags

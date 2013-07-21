@@ -57,15 +57,27 @@ namespace SecuritiesPositionCalculator
             catch(ThreadAbortException abEx)
             {
                 Console.WriteLine(
-                    string.Format("Due to {0}, the market has closed.",
+                    string.Format("\nDue to {0}, the market has closed.",
                     abEx.ExceptionState));
             }
         }
 
+        public void Close(PositionReport report)
+        {
+            _cacheLock.EnterUpgradeableReadLock();
+            for (int i = 0, n = report.Count; i < n; i++)
+            {
+                _cacheLock.EnterWriteLock();
+                report[i].MarketPrice = _securities[report[i].SecurityId];
+                report[i].MarketValue = report[i].MarketPrice*report[i].Quantity;
+                _cacheLock.ExitWriteLock();
+            }
+            _cacheLock.ExitUpgradeableReadLock();
+        }
+
         private void Fluctuate(Random random, string[] secNames)
         {
-            int i = 0, s = _securities.Count;
-            for (; i < s; i++)
+            for (int i = 0, n = _securities.Count; i < n; i++)
             {
                 var secName = secNames[i];
                 var price = _securities[secName];
