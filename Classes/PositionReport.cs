@@ -45,7 +45,6 @@ namespace SecuritiesPositionCalculator
 
         public void CopyTo(Array array, int index)
         {
-
             _positions.CopyTo((Position[])array, index);
         }
 

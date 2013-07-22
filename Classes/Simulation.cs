@@ -61,6 +61,7 @@ namespace SecuritiesPositionCalculator
                 Console.WriteLine(
                     string.Format("Unfortunately, the market has crashed. " +
                                   "Excuse:\n{0}", ex.Message));
+                Console.ReadKey();
             }
         }
 
